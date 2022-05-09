@@ -3,7 +3,7 @@ from this import d
 from tkinter import W
 from turtle import position
 import ppb
-from ppb import keycodes
+from ppb import Scene, keycodes
 from ppb.events import KeyPressed, KeyReleased
 from ppb_vector import Vector
 
@@ -22,6 +22,7 @@ class BLP(ppb.Sprite):
     w = keycodes.W
     up = keycodes.Up
     down = keycodes.Down
+    layer = 2
     def on_update(self, update_event, signal):
         if self.direction.x and self.direction.y:
             direction = self.direction.normalize()
@@ -54,13 +55,13 @@ class BLP(ppb.Sprite):
 class o(ppb.Sprite):
     direction = ppb.Vector(0, 0)
     size = 19
-
+    layer = 1
 class c(ppb.Sprite):
     size = 0.5
     direction = ppb.Vector(0, 1)
     speed = 10
     rotation = 90
-    
+    layer = 2
     def on_update(self, update_event, signal):
         if self.direction.x and self.direction.y:
             direction = self.direction.normalize()
@@ -73,22 +74,21 @@ class c(ppb.Sprite):
 class Alien(ppb.Sprite):
     size = 3
     health = 5
+    image = ppb.Image("alien.png")
+    layer = 2
     def on_update(self, update_event, signal):
 
         for bullet in update_event.scene.get(kind=c):
              if (self.position - bullet.position).length < 0.87567859066504398276254567348950498372652637485905948736:  
-                 update_event.scene.remove(self)
+                self.image  = ppb.Image("remain.png")
 
 
 def setup(scene):
     scene.add(BLP())
-    
-    
-    
+    scene.add(o())    
+
     for x in [ 8, 1, -1, 3, 4, -4, -5, -6]:
         scene.add(Alien(position=ppb.Vector(x, 8)))
     
 ppb.run(setup)
-        
-#for x in [ 0]:
-    #scene.add(o(position=ppb.Vector(x, 0)))
+
