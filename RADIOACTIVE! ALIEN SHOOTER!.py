@@ -1,15 +1,11 @@
-from re import X
-from this import d
-from tkinter import W
-from turtle import position
 import ppb
 from ppb import Scene, keycodes
-from ppb.events import KeyPressed, KeyReleased
+from ppb.events import KeyPressed, KeyReleased, MouseMotion
 from ppb_vector import Vector
 
 
 class BLP(ppb.Sprite):
-    direction = ppb.Vector(0, 0)
+    direction = Vector(0, 0)
     size = 3
     speed = 6
     position = ppb.Vector(0, -7)
@@ -23,6 +19,7 @@ class BLP(ppb.Sprite):
     up = keycodes.Up
     down = keycodes.Down
     layer = 2
+
     def on_update(self, update_event, signal):
         if self.direction.x and self.direction.y:
             direction = self.direction.normalize()
@@ -31,26 +28,25 @@ class BLP(ppb.Sprite):
         self.position += direction * self.speed * update_event.time_delta
     
     def on_key_pressed(self, key_event: KeyPressed, signal):
-        if key_event.key == self.left or key_event.key == self.a :
-            self.direction += ppb.Vector(-1, 0) 
-        elif key_event.key == self.right or key_event.key ==  self.d :
-            self.direction += ppb.Vector(1, 0)
-        elif key_event.key == self.up or key_event.key == self.w :
-            self.direction += ppb.Vector(0,1 )
+        if key_event.key == self.up or key_event.key == self.w :
+            self.direction += self.mouse_motion-self.position 
         elif key_event.key == self.down or key_event.key == self.s :
-            self.direction += ppb.Vector(0, -1 )
+            self.direction += self.position-self.mouse_motion
         elif key_event.key == self.shoot :
             key_event.scene.add(c(position = self.position ))
-              
+         
+        
     def on_key_released(self, key_event: KeyReleased, signal):
-        if key_event.key == self.left or key_event.key == self.a :
-            self.direction += ppb.Vector(1, 0) 
-        elif key_event.key == self.right or key_event.key == self.d :
-            self.direction += ppb.Vector(-1, 0)
-        elif key_event.key == self.up or key_event.key == self.w :
-            self.direction += ppb.Vector(0,-1 )
+        if key_event.key == self.up or key_event.key == self.w :
+            self.direction += -self.direction
         elif key_event.key == self.down or key_event.key == self.s :
-            self.direction += ppb.Vector(0, 1 )
+            self.direction += +self.direction  
+          
+    def on_mouse_motion(self, mouse_motion: MouseMotion, signal):
+       self.mouse_motion = mouse_motion.position 
+       self.rotation 
+
+  
 
 class o(ppb.Sprite):
     direction = ppb.Vector(0, 0)
@@ -79,7 +75,7 @@ class Alien(ppb.Sprite):
     def on_update(self, update_event, signal):
 
         for bullet in update_event.scene.get(kind=c):
-             if (self.position - bullet.position).length < 0.87567859066504398276254567348950498372652637485905948736:  
+             if (self.position - bullet.position).length < 0.5:  
                 self.image  = ppb.Image("remain.png")
 
 
