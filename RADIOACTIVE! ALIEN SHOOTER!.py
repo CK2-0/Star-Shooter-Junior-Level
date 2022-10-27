@@ -9,19 +9,15 @@ from ppb.features import loadingscene
 import math
 class Rocket(ppb.Sprite):
     direction = Vector(0, 0)
-    size = 3
-    speed = 6
+    size = 2.5
+    speed = 0
     position = ppb.Vector(0, -7)
-    left = keycodes.Left 
-    right = keycodes.Right 
     shoot = keycodes.Space
-    d = keycodes.D
     s = keycodes.S
-    a = keycodes.A
     w = keycodes.W
     up = keycodes.Up
     down = keycodes.Down
-    layer = 2
+    layer = 3
     image = ppb.Image("Level1Rocket.png")
     mouse_position = ppb.Vector(0, -7)
     
@@ -30,26 +26,26 @@ class Rocket(ppb.Sprite):
             direction = self.direction.normalize()
         else:
             direction = self.direction
-        self.position += direction * self.speed * update_event.time_delta
-        rotation_direction = self.mouse_position - self.position
-        self.rotation = ( math.degrees(math.atan2( rotation_direction.y, rotation_direction.x)) - -32)
+        rotation_direction = self.mouse_position - self.position 
+        self.position += rotation_direction * self.speed * update_event.time_delta  
+        self.rotation = ( math.degrees(math.atan2( rotation_direction.y, rotation_direction.x)) + 32)
           
         
     def on_key_pressed(self, key_event: KeyPressed, signal):
         if key_event.key == self.up or key_event.key == self.w :
-            self.direction += self.mouse_motion-self.position 
+            self.speed += 3
         elif key_event.key == self.down or key_event.key == self.s :
-            self.direction += self.position-self.mouse_motion
+            self.speed += -1
         elif key_event.key == self.shoot :
-            key_event.scene.add(Bullet(position = self.position, direction= self.mouse_position - self.position, rotation= self.rotation - -32))
+            key_event.scene.add(Bullet(position = self.position, direction= self.mouse_position - self.position, rotation= self.rotation - 30))
  
          
         
     def on_key_released(self, key_event: KeyReleased, signal):
         if key_event.key == self.up or key_event.key == self.w :
-            self.direction += -self.direction
+            self.speed -= 3
         elif key_event.key == self.down or key_event.key == self.s :
-            self.direction += +self.direction  
+            self.speed -= -1
           
     def on_mouse_motion(self, mouse_motion: MouseMotion, signal):
        self.mouse_position = mouse_motion.position 
@@ -60,9 +56,9 @@ class o(ppb.Sprite):
     size = 19
     layer = 1
 class Bullet(ppb.Sprite):
-    size = 0.5
+    size = 0.35
     direction = ppb.Vector(0, 1)
-    speed = 10
+    speed = 15
     image = ppb.Image("l1bullet.png")
     rotation = 90
     layer = 2
@@ -74,11 +70,11 @@ class Bullet(ppb.Sprite):
         self.position += direction * self.speed * update_event.time_delta
         
 class blood(ppb.Sprite):
-    size = 5
+    size = 4.5
     layer = 2
 
 class Alien(ppb.Sprite):
-    size = 3
+    size = 2.5
     image = ppb.Image("alien.png")
     layer = 2
     def on_update(self, update_event, signal):
